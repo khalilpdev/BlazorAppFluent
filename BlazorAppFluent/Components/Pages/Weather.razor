@@ -15,7 +15,8 @@
     <PropertyColumn Title="Summary" Property="@(c => c!.Summary)" Align="Align.End"/>
 </FluentDataGrid>
 
-@code {
+@code 
+{
     private IQueryable<WeatherForecast>? forecasts;
 
     protected override async Task OnInitializedAsync()
