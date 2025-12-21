@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="BlazorAppFluent.Shared/BlazorAppFluent.Shared.csproj" Id="140a167f-4e16-405e-bdc1-b0af45fd6e76" />
   <Project Path="BlazorAppFluent/BlazorAppFluent.csproj" />
 </Solution>
