@@ -1,7 +1,28 @@
-﻿@page "/tarefas"
+﻿@page "/tasks"
+@attribute [StreamRendering]
 
-<h3>Tarefas</h3>
+<PageTitle>Tasks</PageTitle>
 
-@code {
+<h3>Tasks</h3>
 
+<p>This component demonstrates a crud of tasks</p>
+
+<FluentDataGrid Id="todoGrid" Items="@todos" GridTemplateColumns="1fr 1fr 1fr 2fr" Loading="@(todos == null)" Style="height:204px;" TGridItem="Todo">
+    <PropertyColumn Title="Description" Property="@(c => c!.Description)" Align="Align.Start" />
+    <PropertyColumn Title="Create Date" Property="@(c => c!.CreateDate)" Align="Align.Center" />
+    <PropertyColumn Title="Due Date" Property="@(c => c!.DueDate)" Align="Align.Center" />
+    <PropertyColumn Title="Completed ?" Property="@(t => t!.IsDone ? "Yes" : "No")" Align="Align.End" />
+</FluentDataGrid>
+
+
+@code 
+{
+    private IQueryable<Todo>? todos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulate asynchronous loading to demonstrate streaming rendering
+        await Task.Delay(500);
+        todos = Todo.GetFakeData();
+    }
 }
