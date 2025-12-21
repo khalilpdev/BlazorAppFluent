@@ -22,7 +22,7 @@ public class Todo
             new Todo { Id = Guid.NewGuid(), CreateDate = DateTime.Now.AddDays(-1), DueDate = null, Description = "Call mom", IsDone = false },
             new Todo { Id = Guid.NewGuid(), CreateDate = DateTime.Now, DueDate = DateTime.Now.AddDays(7), Description = "Plan weekend trip", IsDone = false }
         };
-        
+
         return todos.AsQueryable();
     }
 
