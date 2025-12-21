@@ -8,14 +8,17 @@
 <p>This component demonstrates a crud of tasks</p>
 
 <FluentLabel>Create a new to-do task</FluentLabel>
-<FluentTextField @bind-Value=message Placeholder="Description"></FluentTextField>
-<br/>
-<FluentButton Appearance="Appearance.Accent" @onclick="CreateNewTask">Create</FluentButton>
+<FluentTextField @bind-Value=message Placeholder="Description" Size="125"></FluentTextField>
 
 <br />
+<FluentButton IconStart="@(new Icons.Regular.Size16.Add())" 
+              IconEnd="@(new Icons.Regular.Size16.TaskListSquareLtr())"
+              Appearance="Appearance.Accent" @onclick="CreateNewTask">Create</FluentButton>
+<br /> 
+<br />
 
-<FluentDataGrid Id="todoGrid" Items="@todos" GridTemplateColumns="1fr 2fr 1fr 1fr" Loading="@(todos == null)" Style="height:204px;" TGridItem="Todo">
-    <TemplateColumn Title="Completed ?" Align="Align.Start">
+<FluentDataGrid Id="todoGrid" Items="@todos" GridTemplateColumns="0.5fr 2fr 1fr 1fr" Loading="@(todos == null)" Style="height:204px;" TGridItem="Todo">
+    <TemplateColumn Title="Is Done" Align="Align.Start">
         <CellTemplate>
             @if (context is Todo t)
             {
