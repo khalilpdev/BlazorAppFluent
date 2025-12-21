@@ -11,37 +11,57 @@
 <FluentTextField @bind-Value=message Placeholder="Description" Size="125"></FluentTextField>
 
 <br />
-<FluentButton IconStart="@(new Icons.Regular.Size16.Add())" 
+<FluentButton IconStart="@(new Icons.Regular.Size16.Add())"
               IconEnd="@(new Icons.Regular.Size16.TaskListSquareLtr())"
               Appearance="Appearance.Accent" @onclick="CreateNewTask">Create</FluentButton>
-<br /> 
+<br />
 <br />
 
-<FluentDataGrid Id="todoGrid" Items="@todos" GridTemplateColumns="0.5fr 2fr 1fr 1fr" Loading="@(todos == null)" Style="height:204px;" TGridItem="Todo">
+<FluentDataGrid Id="todoGrid" Items="@todos" GridTemplateColumns="0.5fr 2fr 1fr 1fr 0.5fr" Loading="@(todos == null)" Style="height:204px;" TGridItem="Todo">
     <TemplateColumn Title="Is Done" Align="Align.Start">
         <CellTemplate>
             @if (context is Todo t)
             {
-                <FluentCheckbox @bind-Checked="t.IsDone" />
+                <FluentCheckbox @key="t.Id" @bind-Checked="t.IsDone" />
             }
         </CellTemplate>
     </TemplateColumn>
     <PropertyColumn Title="Description" Property="@(c => c!.Description)" Align="Align.Start" />
     <PropertyColumn Title="Create Date" Property="@(c => c!.CreateDate)" Align="Align.Center" />
     <PropertyColumn Title="Due Date" Property="@(c => c!.DueDate)" Align="Align.Center" />
+    <TemplateColumn Title="" Align="Align.Start">
+        <CellTemplate>
+            @if (context is Todo t)
+            {
+                <FluentButton Appearance="Appearance.Outline" IconStart="@(new Icons.Regular.Size16.Delete())" OnClick="@(() => RemoveTodo(t.Id))" />
+            }
+        </CellTemplate>
+    </TemplateColumn>
 </FluentDataGrid>
 
+<br />
+<br />
 
-@code 
+<FluentCard Width="150px" Height="70px">
+    Done Qtd:   <b>[@doneCount]</b><br />
+    Undone Qtd: <b>[@undoneCount]</b>
+</FluentCard>
+
+
+@code
 {
     private string? message = string.Empty;
     private IQueryable<Todo>? todos;
+    private int doneCount = 0;
+    private int undoneCount = 0;
 
     protected override async Task OnInitializedAsync()
     {
         // Simulate asynchronous loading to demonstrate streaming rendering
         await Task.Delay(500);
         todos = Todo.GetFakeData();
+
+        UpdateCard();
     }
 
     private void CreateNewTask()
@@ -51,16 +71,45 @@
 
         var newTodo = new Todo
         {
+            Id = Guid.NewGuid(),
             Description = message,
             DueDate = DateTime.Now.AddDays(7),
+            CreateDate = DateTime.Now,
+            IsDone = false
         };
 
         var newList = todos?.ToList();
-        newList?.Add(newTodo);
+        if (newList == null)
+            newList = new List<Todo>();
+
+        newList.Add(newTodo);
 
         message = string.Empty;
 
         todos = newList?.AsQueryable();
+
+        UpdateCard();
         StateHasChanged();
+    }
+
+    private void RemoveTodo(Guid id)
+    {
+        var list = todos?.ToList();
+        if (list == null)
+            return;
+
+        var item = list.FirstOrDefault(x => x.Id == id);
+        if (item != null)
+            list.Remove(item);
+
+        todos = list.AsQueryable();
+        UpdateCard();
+        StateHasChanged();
+    }
+
+    private void UpdateCard()
+    {
+        doneCount = todos?.Count(t => t.IsDone) ?? 0;
+        undoneCount = todos?.Count(t => !t.IsDone) ?? 0;
     }
 }
