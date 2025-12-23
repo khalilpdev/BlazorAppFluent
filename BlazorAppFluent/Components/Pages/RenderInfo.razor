@@ -1,0 +1,27 @@
+﻿<div class="alert alert-warning">
+    <FluentHeader>
+        <FluentText Variant="TextVariant.Heading2">Fluent Blazor Demo</FluentText>
+    </FluentHeader>
+    <ul>
+        @* <li>Rendered on Server: @(OperatingSystem.IsBrowser() ? "No" : "Yes")</li>
+        <li>Rendered on WebAssembly: @(OperatingSystem.IsBrowser() ? "Yes" : "No")</li> *@
+        <li>.NET Version: @System.Environment.Version</li>
+        <li>OS Description: @System.Runtime.InteropServices.RuntimeInformation.OSDescription</li>
+        <li>
+            @if (RendererInfo.Name == "Static")
+            {
+                <p>This component was renderized static and its not interactive</p>
+            }
+            else if (RendererInfo.IsInteractive)
+            {
+                <p>This component was renderized on [@RendererInfo.Name] and now its interactive </p>
+            }
+            else
+            {
+                <p>Renderer Info -> [@RendererInfo]</p>
+            }
+        </li>
+    </ul>
+</div>
+
+

@@ -6,67 +6,36 @@
 
 Welcome to your new Fluent Blazor app.
 
-<FluentCard Width="350px" Height="250px">
-    <h2>Hello World!</h2>    
-    <FluentButton Appearance="@Appearance.Accent">Click Me</FluentButton>
-</FluentCard>
+<RenderInfo />
 
-<FluentStack Style="margin-bottom: 24px;" VerticalAlignment="VerticalAlignment.Center">
-    <FluentLabel>Justify</FluentLabel>
-    <FluentSelect Items=@(Enum.GetValues<JustifyContent>())
-                  OptionValue="@(c => c.ToAttributeValue())"
-                  TOption="JustifyContent"
-                  Position="SelectPosition.Below"
-                  @bind-SelectedOption="@Justification" />
+<FluentStack VerticalAlignment="VerticalAlignment.Center">
+    <FluentIcon Value="@(new Icons.Regular.Size24.Save())" Title="Save" />
+    <FluentIcon Value="@(new Icons.Regular.Size24.Open())" Title="Open" Color="Color.Error" />
+    <FluentIcon Value="@(new Icons.Regular.Size24.Album())" />
 
-    <FluentLabel>Spacing</FluentLabel>
-    <FluentSlider @bind-Value="@Spacing" Min="0" Max="10" Step="1" Style="max-width: 300px; margin-top: 18px;" />
+    <FluentIcon Value="@(Icon.FromImageUrl("_content/FluentUI.Demo.Shared/images/BlazorLogo.png"))" Width="24px" />
+
+    @(new Icons.Regular.Size20.Add().ToMarkup())
+    @(new Icons.Regular.Size20.Airplane().ToMarkup("16px", "blue"))
+
+    <FluentButton IconStart="@(new Icons.Regular.Size24.ArrowCircleLeft())">
+        Back
+    </FluentButton>
+
+    <FluentButton IconEnd="@(new Icons.Regular.Size24.ArrowCircleRight().WithColor(Color.Success))">
+        Next
+    </FluentButton>
+
+    <FluentButton IconEnd="@(new Icons.Regular.Size24.DismissCircle().WithColor("red"))">
+        Exit
+    </FluentButton>
+
+    <FluentButton Appearance="Appearance.Accent"
+                  IconEnd="@(new Icons.Regular.Size24.Alert().WithColor(Color.Fill))">
+        Next
+    </FluentButton>
+
 </FluentStack>
-
-<FluentGrid Spacing="@Spacing" OnBreakpointEnter="@OnBreakpointEnterHandler" 
-            AdaptiveRendering="true" Justify="@Justification" 
-    Style="background-color: var(--neutral-layer-3); padding: 4px; ">
-    <FluentGridItem xs="12">
-        <div class="card">
-            xs="12"
-        </div>
-    </FluentGridItem>
-    <FluentGridItem xs="12" sm="6" HiddenWhen="GridItemHidden.SmAndDown">
-        <div class="card">
-            xs="12" sm="6" Hidden="SmAndDown"
-        </div>
-    </FluentGridItem>
-    <FluentGridItem xs="12" sm="6">
-        <div class="card">
-            xs="12" sm="6"
-        </div>
-    </FluentGridItem>
-    <FluentGridItem xs="6" sm="3">
-        <div class="card">
-            xs="6" sm="3"
-        </div>
-    </FluentGridItem>
-    <FluentGridItem xs="6" sm="3">
-        <div class="card">
-            xs="6" sm="3"
-        </div>
-    </FluentGridItem>
-    <FluentGridItem xs="6" sm="3">
-        <div class="card">
-            xs="6" sm="3"
-        </div>
-    </FluentGridItem>
-    <FluentGridItem xs="6" sm="3">
-        <div class="card">
-            xs="6" sm="3"
-        </div>
-    </FluentGridItem>
-    <FluentGridItem xs="3">
-        <div class="card">
-            xs="3"
-        </div>
-    </FluentGridItem>
-</FluentGrid>
 
 <FluentFooter>
     Footer start text
