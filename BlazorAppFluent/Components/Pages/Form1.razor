@@ -15,16 +15,17 @@
     <br />
     <FluentButton Appearance="Appearance.Accent" @onclick="OnSubmit">Submit</FluentButton>
 
+    <DataAnnotationsValidator />
     <ValidationSummary />
 </EditForm>
 
 @if (submitted)
 {
-    <p>Form OK</p>
+    <FluentLabel>Form Valid</FluentLabel>
 }
-else
+else if (!submitted)
 {
-    <p>Form With Error(s)</p>
+    <FluentLabel>Form With Error(s)</FluentLabel>
 }
 
 @code {
