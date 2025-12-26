@@ -5,6 +5,7 @@
     <ul>
         @* <li>Rendered on Server: @(OperatingSystem.IsBrowser() ? "No" : "Yes")</li>
         <li>Rendered on WebAssembly: @(OperatingSystem.IsBrowser() ? "Yes" : "No")</li> *@
+
         <li>.NET Version: @System.Environment.Version</li>
         <li>OS Description: @System.Runtime.InteropServices.RuntimeInformation.OSDescription</li>
         <li>
