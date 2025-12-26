@@ -1,0 +1,39 @@
+@page "/form-with-validation"
+@rendermode InteractiveServer
+
+<h3>Form With Validation</h3>
+
+<EditForm Model="@student" OnValidSubmit="OnSubmit">
+    <DataAnnotationsValidator />
+
+    <FluentTextField @bind-Value="student.Name" Label="Nome" Placeholder="Your Name" />
+    <br/>
+    <FluentTextField @bind-Value="student.Email" Label="Email" Placeholder="Your email" />
+    <br/>
+    <FluentNumberField @bind-Value="student.Age" Label="Idade" Placeholder="Your Age" />
+
+    <br />
+    <FluentButton Appearance="Appearance.Accent" @onclick="OnSubmit">Submit</FluentButton>
+
+    <ValidationSummary />
+</EditForm>
+
+@if (submitted)
+{
+    <p>Form OK</p>
+}
+else
+{
+    <p>Form With Error(s)</p>
+}
+
+@code {
+    private Student student = new Student();
+    private bool submitted = false;
+
+    private void OnSubmit()
+    {
+        submitted = true;
+        StateHasChanged();
+    }
+}
