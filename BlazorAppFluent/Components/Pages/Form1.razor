@@ -10,7 +10,7 @@
     <br/>
     <FluentTextField @bind-Value="student.Email" Label="Email" Placeholder="Your email" />
     <br/>
-    <FluentNumberField @bind-Value="student.Age" Label="Idade" Placeholder="Your Age" />
+    <FluentNumberField @bind-Value="student.Age" Label="Age" Placeholder="Your Age" />
 
     <br />
     <FluentButton Appearance="Appearance.Accent" @onclick="OnSubmit">Submit</FluentButton>
@@ -19,7 +19,11 @@
     <ValidationSummary />
 </EditForm>
 
-@if (submitted)
+@if (string.IsNullOrWhiteSpace(student.Name))
+{
+    submitted = false;
+}
+else if (submitted)
 {
     <FluentLabel>Form Valid</FluentLabel>
 }
@@ -28,7 +32,8 @@ else if (!submitted)
     <FluentLabel>Form With Error(s)</FluentLabel>
 }
 
-@code {
+@code 
+{
     private Student student = new Student();
     private bool submitted = false;
 
