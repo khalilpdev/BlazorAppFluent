@@ -7,7 +7,7 @@
 
 <h3>Tasks</h3>
 
-<p>This component demonstrates a crud of tasks</p>
+<p>This component demonstrates a CRUD of tasks</p>
 
 <FluentLabel>Create a new to-do task</FluentLabel>
 <FluentTextField @bind-Value=message Placeholder="Description" Size="125"></FluentTextField>
@@ -90,6 +90,8 @@
 
         todos = newList?.AsQueryable();
 
+        ToastService.ShowSuccess("Todo Created.");
+
         UpdateCard();
         StateHasChanged();
     }
@@ -102,7 +104,10 @@
 
         var item = list.FirstOrDefault(x => x.Id == id);
         if (item != null)
+        {
             list.Remove(item);
+            ToastService.ShowError("Todo removed.");
+        }
 
         todos = list.AsQueryable();
         UpdateCard();

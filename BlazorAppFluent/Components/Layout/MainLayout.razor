@@ -1,6 +1,8 @@
 ﻿@inherits LayoutComponentBase
 
 <FluentLayout>
+    <FluentDialogProvider @rendermode="@InteractiveServer" />
+    <FluentToastProvider MaxToastCount="10" @rendermode="@InteractiveServer" />
     <FluentHeader>
         BlazorAppFluent - A sample Blazor application using Fluent UI Blazor components | <b> Leandro Khalil</b>
     </FluentHeader>
