@@ -1,4 +1,7 @@
 @page "/theme"
+@rendermode InteractiveServer
+
+<PageTitle>Theme</PageTitle>
 
 <FluentDesignTheme @bind-Mode="@Mode"
                    @bind-OfficeColor="@OfficeColor"
@@ -45,8 +48,6 @@
 @code
 {
     public DesignThemeModes Mode { get; set; }
-
-
 
     public OfficeColor? OfficeColor { get; set; }
 
