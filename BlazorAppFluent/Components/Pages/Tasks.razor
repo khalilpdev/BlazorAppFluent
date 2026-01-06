@@ -96,7 +96,7 @@
         StateHasChanged();
     }
 
-    private void RemoveTodo(Guid id)
+    private async Task RemoveTodo(Guid id)
     {
         var list = todos?.ToList();
         if (list == null)
@@ -105,8 +105,15 @@
         var item = list.FirstOrDefault(x => x.Id == id);
         if (item != null)
         {
+            var dialog = await DialogService.ShowConfirmationAsync
+                            ($"Are you <strong>sure</strong> you want to delete [{item.Description}]?");
+
+            var result = await dialog.Result;
+            if (result.Cancelled)
+                return;
+
             list.Remove(item);
-            ToastService.ShowError("Todo removed.");
+            ToastService.ShowError($"Task [{item.Description}] removed.");
         }
 
         todos = list.AsQueryable();
