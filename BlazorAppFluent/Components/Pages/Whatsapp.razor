@@ -1,0 +1,364 @@
+﻿@page "/whatsapp"
+@rendermode InteractiveServer
+
+<PageTitle>WhatsApp</PageTitle>
+
+<div class="whatsapp-container">
+    <div class="chats-area">
+        <div class="header">
+            <FluentStack Horizontal Justify="Justify.Between" Align="Alignment.Center">
+                <FluentText Weight="FontWeight.Semibold" Size="StandardFontSize.Large" Align="Align.Start">Chats</FluentText>
+                <FluentStack Horizontal Gap="10px">
+                    <FluentIcon Value="@searchIcon" />
+                    <FluentIcon Value="@moreVerticalIcon" />
+                </FluentStack>
+            </FluentStack>
+        </div>
+
+        <div class="search-bar">
+            <FluentTextField Placeholder="Ask Meta AI or Search" Style="width: 100%">
+                <FluentIcon Value="@searchIcon" Slot="start" />
+            </FluentTextField>
+        </div>
+
+        <div class="filter-tabs">
+            <FluentTabs Orientation="Orientation.Horizontal">
+                <FluentTab>All</FluentTab>
+                <FluentTab>Unread</FluentTab>
+                <FluentTab>Favorites</FluentTab>
+                <FluentTab>Groups</FluentTab>
+            </FluentTabs>
+        </div>
+
+        <div class="conversations-list">
+            @foreach (var chat in chats)
+            {
+                <div class="chat-item @(chat.IsActive ? "active-chat" : "")" @onclick="@(() => SelectChat(chat))">
+                    <div class="chat-content">
+                        <div class="chat-avatar">
+                            <div class="avatar-placeholder">
+                                <FluentIcon Value="@personIcon" />
+                            </div>
+                        </div>
+                        <div class="chat-details">
+                            <div class="chat-header-row">
+                                <span class="chat-name">@chat.Name</span>
+                                <span class="chat-time">@chat.LastMessageTime</span>
+                            </div>
+                            <div class="chat-preview-row">
+                                @if (chat.LastMessageType == MessageType.Text)
+                                {
+                                    <span class="message-preview">@chat.LastMessage</span>
+                                }
+                                else if (chat.LastMessageType == MessageType.Voice)
+                                {
+                                    <span class="message-preview">
+                                        <FluentIcon Value="@micIcon" Style="margin-right: 4px; vertical-align: middle;" />
+                                        Voice message
+                                    </span>
+                                }
+                                else if (chat.LastMessageType == MessageType.Link)
+                                {
+                                    <span class="message-preview">
+                                        <FluentIcon Value="@linkIcon" Style="margin-right: 4px; vertical-align: middle;" />
+                                        @chat.LastMessage
+                                    </span>
+                                }
+
+                                @if (chat.UnreadCount > 0)
+                                {
+                                    <span class="unread-badge">@chat.UnreadCount</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="bottom-nav-menu">
+            <FluentStack Horizontal Justify="Justify.Around" Align="Alignment.Center" Style="width: 100%; padding: 8px 0;">
+                <div class="nav-item @(activeTab == "chats" ? "active" : "")" @onclick="@(() => SetActiveTab("chats"))">
+                    <FluentIcon Value="@chatIcon" Style="display: block; margin: 0 auto 4px;" />
+                    <span style="font-size: 12px; text-align: center; display: block;">Chats</span>
+                </div>
+                <div class="nav-item @(activeTab == "status" ? "active" : "")" @onclick="@(() => SetActiveTab("status"))">
+                    <FluentIcon Value="@statusIcon" Style="display: block; margin: 0 auto 4px;" />
+                    <span style="font-size: 12px; text-align: center; display: block;">Status</span>
+                </div>
+                <div class="nav-item @(activeTab == "communities" ? "active" : "")" @onclick="@(() => SetActiveTab("communities"))">
+                    <FluentIcon Value="@peopleIcon" Style="display: block; margin: 0 auto 4px;" />
+                    <span style="font-size: 12px; text-align: center; display: block;">Communities</span>
+                </div>
+                <div class="nav-item @(activeTab == "calls" ? "active" : "")" @onclick="@(() => SetActiveTab("calls"))">
+                    <FluentIcon Value="@callIcon" Style="display: block; margin: 0 auto 4px;" />
+                    <span style="font-size: 12px; text-align: center; display: block;">Calls</span>
+                </div>
+            </FluentStack>
+        </div>
+    </div>
+
+    <div class="main-content-area">
+        @if (selectedChat != null)
+        {
+            <div class="selected-chat-area">
+                <div class="chat-header-bar">
+                    <FluentStack Horizontal Justify="Justify.Between" Align="Alignment.Center">
+                        <FluentStack Horizontal Gap="10px" Align="Alignment.Center">
+                            <FluentButton Appearance="Appearance.Stealth" OnClick="DeselectChat" Class="mobile-only">
+                                <FluentIcon Value="@chevronLeftIcon" />
+                            </FluentButton>
+                            <div class="current-chat-info">
+                                <FluentText Weight="FontWeight.Semibold">@selectedChat.Name</FluentText>
+                                <FluentText Size="StandardFontSize.Small" Style="color: var(--neutral-foreground-rest);">Last seen recently</FluentText>
+                            </div>
+                        </FluentStack>
+                        <FluentStack Horizontal Gap="10px">
+                            <FluentIcon Value="@videoIcon" />
+                            <FluentIcon Value="@callIcon" />
+                            <FluentIcon Value="@moreVerticalIcon" />
+                        </FluentStack>
+                    </FluentStack>
+                </div>
+
+                <div class="messages-container">
+                    <div class="encryption-notice">
+                        <FluentIcon Value="@lockIcon" Style="margin-right: 4px; vertical-align: middle;" />
+                        <span>Your personal messages are end-to-end encrypted</span>
+                    </div>
+
+                    @foreach (var message in selectedChat.Messages)
+                    {
+                        <div class="message @(message.IsMine ? "my-message" : "their-message")">
+                            <div class="message-content">
+                                @message.Content
+                                <div class="message-time">
+                                    @message.Time
+                                    @if (message.IsMine)
+                                    {
+                                        <FluentIcon Value="@checkmarkIcon" Style="margin-left: 4px; vertical-align: middle;" />
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="message-input-area">
+                    <FluentStack Horizontal Gap="10px" Align="Alignment.Center">
+                        <FluentButton Appearance="Appearance.Stealth">
+                            <FluentIcon Value="@emojiIcon" />
+                        </FluentButton>
+                        <FluentTextField Placeholder="Type a message" Style="flex: 1;">
+                            <FluentIcon Value="@attachIcon" Slot="end" />
+                        </FluentTextField>
+                        <FluentButton Appearance="Appearance.Accent" Variant="Variant.Filled">
+                            <FluentIcon Value="@micIcon" />
+                        </FluentButton>
+                    </FluentStack>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="no-chat-selected">
+                <div class="welcome-icon">
+                    <FluentIcon Value="@chatIcon" Style="font-size: 48px; color: var(--neutral-foreground-rest); opacity: 0.5;" />
+                </div>
+                <FluentText Size="StandardFontSize.Medium" Style="color: var(--neutral-foreground-rest); margin-top: 20px;">
+                    Select a chat to start messaging
+                </FluentText>
+                <div class="encryption-notice-welcome">
+                    <FluentIcon Value="@lockIcon" Style="margin-right: 4px; vertical-align: middle;" />
+                    <span>Your personal messages are end-to-end encrypted</span>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<Chat> chats = new();
+    private Chat? selectedChat;
+    private string activeTab = "chats";
+    
+    // Icon definitions
+    private Icon? searchIcon = new Icons.Regular.Size20.Search();
+    private Icon? moreVerticalIcon = new Icons.Regular.Size20.MoreVertical();
+    private Icon? personIcon = new Icons.Regular.Size20.Person();
+    private Icon? micIcon = new Icons.Regular.Size20.Mic();
+    private Icon? linkIcon = new Icons.Regular.Size20.Link();
+    private Icon? chevronLeftIcon = new Icons.Regular.Size20.ChevronLeft();
+    private Icon? videoIcon = new Icons.Regular.Size20.Video();
+    private Icon? callIcon = new Icons.Regular.Size20.Call();
+    private Icon? lockIcon = new Icons.Regular.Size20.LockClosed();
+    private Icon? checkmarkIcon = new Icons.Regular.Size20.Checkmark();
+    private Icon? emojiIcon = new Icons.Regular.Size20.Emoji();
+    private Icon? attachIcon = new Icons.Regular.Size20.Attach();
+    private Icon? chatIcon = new Icons.Regular.Size20.Chat();
+    private Icon? statusIcon = new Icons.Regular.Size20.Status();
+    private Icon? peopleIcon = new Icons.Regular.Size20.People();
+
+    protected override void OnInitialized()
+    {
+        chats = new List<Chat>
+        {
+            new Chat { Id = 1, Name = "José da Silva", LastMessage = "OK, Thanks", LastMessageTime = "12:08", LastMessageType = MessageType.Text, UnreadCount = 0, IsActive = true },
+            new Chat { Id = 2, Name = "Contact 2", LastMessage = "✔ Clicker", LastMessageTime = "09:21", LastMessageType = MessageType.Text, UnreadCount = 0 },
+            new Chat { Id = 3, Name = "User Info 2", LastMessage = "Voice message", LastMessageTime = "08:39", LastMessageType = MessageType.Voice, UnreadCount = 2 },
+            new Chat { Id = 4, Name = "Khalil Dev", LastMessage = "https://www.linkedin.com/fee...", LastMessageTime = "Sunday", LastMessageType = MessageType.Link, UnreadCount = 1,
+                Messages = new List<Message> {
+                    new Message { Content = "chegou um codigo ai no email", Time = "11:55", IsMine = false },
+                    new Message { Content = "pera", Time = "12:00", IsMine = true },
+                    new Message { Content = "deu certo aqui", Time = "12:02", IsMine = true }
+                }
+            },
+            new Chat { Id = 5, Name = "Group Channel", LastMessage = "Link...", LastMessageTime = "Sunday", LastMessageType = MessageType.Link, UnreadCount = 0 }
+        };
+    }
+
+    private void SelectChat(Chat chat)
+    {
+        selectedChat = chat;
+        chat.UnreadCount = 0;
+        chats.ForEach(c => c.IsActive = false);
+        chat.IsActive = true;
+    }
+
+    private void DeselectChat() { selectedChat = null; chats.ForEach(c => c.IsActive = false); }
+    private void SetActiveTab(string tab) { activeTab = tab; }
+
+    public class Chat
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string LastMessage { get; set; } = string.Empty;
+        public string LastMessageTime { get; set; } = string.Empty;
+        public MessageType LastMessageType { get; set; }
+        public int UnreadCount { get; set; }
+        public bool IsActive { get; set; }
+        public List<Message> Messages { get; set; } = new();
+    }
+
+    public class Message { public string Content { get; set; } = string.Empty; public string Time { get; set; } = string.Empty; public bool IsMine { get; set; } }
+    public enum MessageType { Text, Voice, Link }
+}
+
+<style>
+    /* MAIN Container */
+    .whatsapp-container {
+        display: flex;
+        height: 100vh;
+        width: 100%;
+        background-color: var(--neutral-layer-1);
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        overflow: hidden;
+    }
+
+    /* left column  */
+    .chats-area {
+        display: flex;
+        flex-direction: column; /* Vertical: Header -> Busca -> Lista -> Menu */
+        width: 350px;
+        min-width: 350px; /* fixed length on desktop */
+        height: 100%;
+        border-right: 1px solid var(--neutral-stroke-divider-rest);
+        background-color: var(--neutral-layer-1);
+    }
+
+    .header { padding: 16px; background-color: var(--neutral-layer-1); }
+    .search-bar { padding: 8px 16px; background-color: var(--neutral-layer-1); }
+    .filter-tabs { padding: 0 16px; border-bottom: 1px solid var(--neutral-stroke-rest); }
+
+    .conversations-list {
+        flex: 1; 
+        overflow-y: auto;
+        min-height: 0; 
+    }
+
+    /* right column - content */
+    .main-content-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background-color: var(--neutral-layer-2);
+        height: 100%;
+        overflow: hidden;
+    }
+
+    /* chat components */
+    .chat-item {
+        cursor: pointer;
+        border-bottom: 1px solid var(--neutral-stroke-rest);
+        transition: background-color 0.2s;
+        padding: 12px 16px;
+    }
+    .chat-item:hover { background-color: var(--neutral-layer-3); }
+    .active-chat { background-color: var(--accent-fill-rest); color: white; }
+    .active-chat .chat-name, .active-chat .chat-time, .active-chat .message-preview { color: white; }
+    
+    .chat-content { display: flex; align-items: flex-start; gap: 12px; }
+    .chat-avatar { flex-shrink: 0; }
+    .avatar-placeholder {
+        width: 48px; height: 48px; border-radius: 50%;
+        background-color: var(--accent-fill-rest);
+        display: flex; align-items: center; justify-content: center; color: white;
+    }
+    .chat-details { flex: 1; min-width: 0; }
+    .chat-header-row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .chat-name { font-weight: 600; font-size: 16px; color: var(--neutral-foreground-rest); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .chat-time { font-size: 12px; color: var(--neutral-foreground-hint); }
+    .chat-preview-row { display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: var(--neutral-foreground-hint); }
+    .unread-badge { background-color: var(--accent-fill-rest); color: white; font-size: 12px; padding: 2px 6px; border-radius: 10px; }
+
+    /* selected chat*/
+    .selected-chat-area { flex: 1; display: flex; flex-direction: column; height: 100%; }
+    .chat-header-bar { padding: 10px 16px; background-color: var(--neutral-layer-1); border-bottom: 1px solid var(--neutral-stroke-rest); }
+    
+    .messages-container {
+        flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" opacity="0.05"><path d="M50,20 Q70,30 50,40 Q30,50 50,60 Q70,70 50,80 Q30,90 50,100" stroke="%23888" fill="none"/></svg>');
+    }
+
+    .message { max-width: 70%; padding: 8px 12px; border-radius: 8px; position: relative; word-wrap: break-word; }
+    .my-message { align-self: flex-end; background-color: var(--accent-fill-rest); color: white; border-bottom-right-radius: 0; }
+    .their-message { align-self: flex-start; background-color: var(--neutral-layer-3); color: var(--neutral-foreground-rest); border-bottom-left-radius: 0; }
+    .message-time { font-size: 11px; opacity: 0.8; text-align: right; margin-top: 4px; display: flex; align-items: center; justify-content: flex-end; }
+    .message-input-area { padding: 12px 16px; background-color: var(--neutral-layer-1); border-top: 1px solid var(--neutral-stroke-rest); }
+
+    .no-chat-selected { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: var(--neutral-layer-2); padding: 20px; }
+    .mobile-only { display: none; }
+    .encryption-notice, .encryption-notice-welcome { text-align: center; font-size: 12px; color: var(--neutral-foreground-hint); display: flex; align-items: center; justify-content: center; gap: 6px; margin: 20px 0; }
+
+    .bottom-nav-menu {
+        background-color: var(--neutral-layer-1);
+        border-top: 1px solid var(--neutral-stroke-divider-rest);
+        width: 100%;
+    }
+    
+    .nav-item {
+        cursor: pointer;
+        border-radius: 4px;
+        padding: 4px;
+        color: var(--neutral-foreground-hint);
+        transition: 0.2s;
+    }
+    .nav-item:hover { background-color: var(--neutral-layer-3); }
+    .nav-item.active { color: var(--accent-fill-rest); }
+    .nav-item.active span { font-weight: 600; }
+
+    @@media (max-width: 768px) {
+        .chats-area { 
+            width: 100%; 
+            min-width: 100%;
+            display: @(selectedChat == null ? "flex" : "none") !important; 
+        }
+        
+        .main-content-area {
+            display: @(selectedChat == null ? "none" : "flex") !important;
+            width: 100%;
+        }
+
+        .mobile-only { display: block; }
+    }
+</style>
