@@ -203,17 +203,76 @@
     {
         chats = new List<Chat>
         {
-            new Chat { Id = 1, Name = "José da Silva", LastMessage = "OK, Thanks", LastMessageTime = "12:08", LastMessageType = MessageType.Text, UnreadCount = 0, IsActive = true },
-            new Chat { Id = 2, Name = "Contact 2", LastMessage = "✔ Clicker", LastMessageTime = "09:21", LastMessageType = MessageType.Text, UnreadCount = 0 },
-            new Chat { Id = 3, Name = "User Info 2", LastMessage = "Voice message", LastMessageTime = "08:39", LastMessageType = MessageType.Voice, UnreadCount = 2 },
-            new Chat { Id = 4, Name = "Khalil Dev", LastMessage = "https://www.linkedin.com/fee...", LastMessageTime = "Sunday", LastMessageType = MessageType.Link, UnreadCount = 1,
+            new Chat { Id = 1, Name = "José da Silva", LastMessage = "OK, Thanks", LastMessageTime = "12:08", LastMessageType = MessageType.Text, UnreadCount = 0, IsActive = true, 
                 Messages = new List<Message> {
-                    new Message { Content = "chegou um codigo ai no email", Time = "11:55", IsMine = false },
-                    new Message { Content = "pera", Time = "12:00", IsMine = true },
-                    new Message { Content = "deu certo aqui", Time = "12:02", IsMine = true }
+                    new Message { Content = "Opa, tudo bem?", Time = "10:15", IsMine = false },
+                    new Message { Content = "Oi! Tudo certo por aqui", Time = "10:16", IsMine = true },
+                    new Message { Content = "Você conseguiu receber aquele arquivo que enviei?", Time = "10:20", IsMine = false },
+                    new Message { Content = "Recebi sim, muito obrigado", Time = "10:21", IsMine = true },
+                    new Message { Content = "Ótimo! Deu certo então?", Time = "10:25", IsMine = false },
+                    new Message { Content = "Deu tudo certo, sem problemas", Time = "10:26", IsMine = true },
+                    new Message { Content = "Que legal! Precisando de algo mais?", Time = "11:00", IsMine = false },
+                    new Message { Content = "Por enquanto não, mas depois eu te aviso", Time = "11:01", IsMine = true },
+                    new Message { Content = "Beleza, fico no aguardo", Time = "11:30", IsMine = false },
+                    new Message { Content = "OK, Thanks", Time = "12:08", IsMine = false },
+                    }
+            },
+            new Chat { Id = 2, Name = "Contact 2", LastMessage = "✔ Clicker", LastMessageTime = "09:21", LastMessageType = MessageType.Text, UnreadCount = 0,
+                Messages = new List<Message> {
+                    new Message { Content = "Conseguiu terminar aquele projeto?", Time = "08:00", IsMine = false },
+                    new Message { Content = "Quase! Faltam alguns detalhes", Time = "08:05", IsMine = true },
+                    new Message { Content = "Quando você acha que fica pronto?", Time = "08:10", IsMine = false },
+                    new Message { Content = "Amanhã eu termino com certeza", Time = "08:15", IsMine = true },
+                    new Message { Content = "Perfeito! Estou contando com você", Time = "08:45", IsMine = false },
+                    new Message { Content = "Pode deixar, vai estar top demais", Time = "08:50", IsMine = true },
+                    new Message { Content = "Haha, vou estar aguardando então", Time = "09:00", IsMine = false },
+                    new Message { Content = "Relaxa, vai dar tudo certo", Time = "09:05", IsMine = true },
+                    new Message { Content = "Tá bom, valeu mesmo!", Time = "09:10", IsMine = false },
+                    new Message { Content = "✔ Clicker", Time = "09:21", IsMine = true },
+                    }
+            },
+            new Chat { Id = 3, Name = "User Info 2", LastMessage = "Voice message", LastMessageTime = "08:39", LastMessageType = MessageType.Voice, UnreadCount = 2,
+                Messages = new List<Message> {
+                    new Message { Content = "Ei, como vai?", Time = "07:30", IsMine = true },
+                    new Message { Content = "Tudo bem! E você?", Time = "07:32", IsMine = false },
+                    new Message { Content = "Tudo certo por aqui", Time = "07:35", IsMine = true },
+                    new Message { Content = "Que bom! Você viu minha mensagem anterior?", Time = "08:00", IsMine = false },
+                    new Message { Content = "Vi sim, vou conferir isso aí", Time = "08:05", IsMine = true },
+                    new Message { Content = "Obrigado! Avisa quando conseguir", Time = "08:10", IsMine = false },
+                    new Message { Content = "Certo, em breve eu falo com você", Time = "08:15", IsMine = true },
+                    new Message { Content = "Blz, ficarei no aguardo", Time = "08:20", IsMine = false },
+                    new Message { Content = "Pode deixar comigo", Time = "08:25", IsMine = true },
+                    new Message { Content = "Voice message", Time = "08:39", IsMine = false },
                 }
             },
-            new Chat { Id = 5, Name = "Group Channel", LastMessage = "Link...", LastMessageTime = "Sunday", LastMessageType = MessageType.Link, UnreadCount = 0 }
+            new Chat { Id = 4, Name = "Khalil Dev", LastMessage = "deu certo aqui", LastMessageTime = "12:02", LastMessageType = MessageType.Text, UnreadCount = 1,
+                Messages = new List<Message> {
+                    new Message { Content = "E aí, beleza?", Time = "11:30", IsMine = true },
+                    new Message { Content = "Tudo certo! Você conseguiu aquele codigo?", Time = "11:40", IsMine = false },
+                    new Message { Content = "Consegui sim, deixa eu verificar aqui", Time = "11:45", IsMine = true },
+                    new Message { Content = "chegou um codigo ai no email", Time = "11:55", IsMine = false },
+                    new Message { Content = "pera, deixa eu abrir aqui", Time = "12:00", IsMine = true },
+                    new Message { Content = "tá abrindo?", Time = "12:00", IsMine = false },
+                    new Message { Content = "pera", Time = "12:00", IsMine = true },
+                    new Message { Content = "tá certo!", Time = "12:01", IsMine = false },
+                    new Message { Content = "deu certo aqui", Time = "12:02", IsMine = true },
+                    new Message { Content = "show! Valeu demais", Time = "12:02", IsMine = false },
+                }
+            },
+            new Chat { Id = 5, Name = "Group Channel", LastMessage = "Link...", LastMessageTime = "Sunday", LastMessageType = MessageType.Link, UnreadCount = 0,
+                Messages = new List<Message> {
+                    new Message { Content = "Hey everyone, did you check the link?", Time = "10:00", IsMine = false },
+                    new Message { Content = "Haven't seen it yet", Time = "10:05", IsMine = true },
+                    new Message { Content = "I'll analyze it now", Time = "10:10", IsMine = false },
+                    new Message { Content = "I found it quite interesting", Time = "10:30", IsMine = true },
+                    new Message { Content = "That's true, it has everything we need", Time = "10:35", IsMine = false },
+                    new Message { Content = "I agree, let's use it", Time = "10:40", IsMine = true },
+                    new Message { Content = "Perfect! So it's settled", Time = "10:50", IsMine = false },
+                    new Message { Content = "Got it, I'll start implementing", Time = "11:00", IsMine = true },
+                    new Message { Content = "Great, call me if you have any doubts", Time = "11:05", IsMine = false },
+                    new Message { Content = "Link...", Time = "Sunday", IsMine = false },
+                }
+            }
         };
     }
 
