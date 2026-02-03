@@ -51,9 +51,8 @@
             });
 
         var result = await dialog.Result;
-        if (!result.Cancelled && result.Data != null)
+        if (!result.Cancelled && result.Data is bool isDarkMode)
         {
-            bool isDarkMode = (bool)result.Data;
             await ApplyTheme(isDarkMode);
         }
     }
