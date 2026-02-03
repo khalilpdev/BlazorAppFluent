@@ -1,3 +1,4 @@
+@implements IDialogContentComponent
 @inject IJSRuntime JS
 
 <div style="padding: 20px; min-width: 300px;">
@@ -17,6 +18,9 @@
 @code {
     [CascadingParameter]
     public FluentDialog Dialog { get; set; } = default!;
+
+    [Parameter]
+    public DialogParameters Content { get; set; } = default!;
 
     private bool isSystemDarkMode = false;
 
