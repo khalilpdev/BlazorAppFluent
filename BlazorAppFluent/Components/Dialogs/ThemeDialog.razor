@@ -1,0 +1,45 @@
+@inject IJSRuntime JS
+
+<div style="padding: 20px; min-width: 300px;">
+    <p>We detected that your system is using <strong>@(isSystemDarkMode ? "Dark Mode" : "Light Mode")</strong>.</p>
+    <p>Would you like to use the same theme for this application?</p>
+    
+    <FluentStack Horizontal="true" Gap="10px" Style="margin-top: 20px;">
+        <FluentButton Appearance="Appearance.Accent" OnClick="@(() => ConfirmDarkMode())">
+            Use Dark Mode
+        </FluentButton>
+        <FluentButton Appearance="Appearance.Outline" OnClick="@(() => ConfirmLightMode())">
+            Use Light Mode
+        </FluentButton>
+    </FluentStack>
+</div>
+
+@code {
+    [CascadingParameter]
+    public FluentDialog Dialog { get; set; } = default!;
+
+    private bool isSystemDarkMode = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            isSystemDarkMode = await JS.InvokeAsync<bool>("getSystemTheme");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error detecting system theme: {ex.Message}");
+            isSystemDarkMode = false;
+        }
+    }
+
+    private async Task ConfirmDarkMode()
+    {
+        await Dialog.CloseAsync(true);
+    }
+
+    private async Task ConfirmLightMode()
+    {
+        await Dialog.CloseAsync(false);
+    }
+}

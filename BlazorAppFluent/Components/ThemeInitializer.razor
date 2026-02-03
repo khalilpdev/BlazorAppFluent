@@ -1,0 +1,64 @@
+@rendermode InteractiveServer
+@inject IJSRuntime JS
+@inject IDialogService DialogService
+
+@code {
+    private bool isSystemDarkMode = false;
+    private bool dialogShown = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Detect system theme preference using prefers-color-scheme media query
+            isSystemDarkMode = await JS.InvokeAsync<bool>("getSystemTheme");
+            
+            // Show dialog after a small delay to ensure the component is rendered
+            await Task.Delay(500);
+            await ShowThemeDialog();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error detecting system theme: {ex.Message}");
+            isSystemDarkMode = false;
+        }
+    }
+
+    private async Task ShowThemeDialog()
+    {
+        if (dialogShown) return;
+        dialogShown = true;
+
+        var dialog = await DialogService.ShowDialogAsync<ThemeDialog>(
+            new DialogParameters()
+            {
+                Title = "Theme Preference",
+                PreventScroll = true,
+                Alignment = HorizontalAlignment.Center,
+                Width = "400px"
+            });
+
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            bool isDarkMode = (bool)result.Data;
+            await ApplyTheme(isDarkMode);
+        }
+    }
+
+    private async Task ApplyTheme(bool isDarkMode)
+    {
+        try
+        {
+            // Apply theme to the document
+            await JS.InvokeVoidAsync("applyTheme", isDarkMode);
+            
+            // Store preference in localStorage
+            await JS.InvokeVoidAsync("localStorage.setItem", "theme-preference", isDarkMode ? "dark" : "light");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error applying theme: {ex.Message}");
+        }
+    }
+}
