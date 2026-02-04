@@ -13,6 +13,10 @@
             Use Light Mode
         </FluentButton>
     </FluentStack>
+    
+    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--neutral-stroke-divider-rest);">
+        <FluentCheckbox @bind-Value="@dontAskAgain">Don't ask again</FluentCheckbox>
+    </div>
 </div>
 
 @code {
@@ -23,6 +27,7 @@
     public DialogParameters Content { get; set; } = default!;
 
     private bool isSystemDarkMode = false;
+    private bool dontAskAgain = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -39,11 +44,17 @@
 
     private async Task ConfirmDarkMode()
     {
-        await Dialog.CloseAsync(true);
+        await Dialog.CloseAsync(new ThemeDialogResult { IsDarkMode = true, DontAskAgain = dontAskAgain });
     }
 
     private async Task ConfirmLightMode()
     {
-        await Dialog.CloseAsync(false);
+        await Dialog.CloseAsync(new ThemeDialogResult { IsDarkMode = false, DontAskAgain = dontAskAgain });
+    }
+    
+    public class ThemeDialogResult
+    {
+        public bool IsDarkMode { get; set; }
+        public bool DontAskAgain { get; set; }
     }
 }

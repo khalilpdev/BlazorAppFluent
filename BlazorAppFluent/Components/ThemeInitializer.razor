@@ -5,12 +5,22 @@
 @code {
     private bool isSystemDarkMode = false;
     private bool dialogShown = false;
+    private const string DontAskAgainKey = "theme-dont-ask-again";
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            // Check if user already has a saved preference
+            // Check if user has set "don't ask again" preference
+            var dontAskAgain = await JS.InvokeAsync<string>("localStorage.getItem", DontAskAgainKey);
+            
+            if (dontAskAgain == "true")
+            {
+                // User doesn't want to be asked again, skip dialog
+                return;
+            }
+            
+            // Check if user already has a saved theme preference
             // FluentDesignTheme uses "theme" as the storage key
             var savedTheme = await JS.InvokeAsync<string>("localStorage.getItem", "theme");
             
@@ -46,9 +56,24 @@
             });
 
         var result = await dialog.Result;
-        if (!result.Cancelled && result.Data is bool isDarkMode)
+        if (!result.Cancelled && result.Data != null)
         {
-            await ApplyTheme(isDarkMode);
+            // Handle the new result structure
+            if (result.Data is ThemeDialog.ThemeDialogResult themeResult)
+            {
+                await ApplyTheme(themeResult.IsDarkMode);
+                
+                // Save "don't ask again" preference if checked
+                if (themeResult.DontAskAgain)
+                {
+                    await JS.InvokeVoidAsync("localStorage.setItem", DontAskAgainKey, "true");
+                }
+            }
+            // Fallback for backward compatibility with bool result
+            else if (result.Data is bool isDarkMode)
+            {
+                await ApplyTheme(isDarkMode);
+            }
         }
     }
 
