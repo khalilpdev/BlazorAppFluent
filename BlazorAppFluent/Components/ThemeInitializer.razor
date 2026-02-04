@@ -11,7 +11,8 @@
         try
         {
             // Check if user already has a saved preference
-            var savedTheme = await JS.InvokeAsync<string>("localStorage.getItem", "theme-preference");
+            // FluentDesignTheme uses "theme" as the storage key
+            var savedTheme = await JS.InvokeAsync<string>("localStorage.getItem", "theme");
             
             if (string.IsNullOrEmpty(savedTheme))
             {
@@ -21,12 +22,6 @@
                 // Show dialog after a small delay to ensure the component is rendered
                 await Task.Delay(500);
                 await ShowThemeDialog();
-            }
-            else
-            {
-                // Apply saved preference without showing dialog
-                bool isDarkMode = savedTheme == "dark";
-                await ApplyTheme(isDarkMode);
             }
         }
         catch (Exception ex)
@@ -61,11 +56,14 @@
     {
         try
         {
-            // Apply theme to the document
-            await JS.InvokeVoidAsync("applyTheme", isDarkMode);
+            // Store preference in localStorage using the same key as FluentDesignTheme
+            // FluentDesignTheme expects a JSON object with mode and color
+            var themeMode = isDarkMode ? "Dark" : "Light";
+            var themeData = $"{{\"Mode\":\"{themeMode}\"}}";
+            await JS.InvokeVoidAsync("localStorage.setItem", "theme", themeData);
             
-            // Store preference in localStorage
-            await JS.InvokeVoidAsync("localStorage.setItem", "theme-preference", isDarkMode ? "dark" : "light");
+            // Reload the page to apply the theme
+            await JS.InvokeVoidAsync("location.reload");
         }
         catch (Exception ex)
         {
