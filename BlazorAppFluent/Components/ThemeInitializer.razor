@@ -59,7 +59,7 @@
             // Store preference in localStorage using the same key as FluentDesignTheme
             // FluentDesignTheme expects a JSON object with mode and color
             var themeMode = isDarkMode ? "Dark" : "Light";
-            var themeData = $"{{\"Mode\":\"{themeMode}\"}}";
+            var themeData = System.Text.Json.JsonSerializer.Serialize(new { Mode = themeMode });
             await JS.InvokeVoidAsync("localStorage.setItem", "theme", themeData);
             
             // Reload the page to apply the theme

@@ -77,7 +77,9 @@
     {
         try
         {
-            var themeData = new { Mode = Mode.ToString(), OfficeColor = OfficeColor?.ToString() ?? "Default" };
+            var themeData = OfficeColor.HasValue 
+                ? new { Mode = Mode.ToString(), OfficeColor = OfficeColor.Value.ToString() }
+                : (object)new { Mode = Mode.ToString() };
             var json = System.Text.Json.JsonSerializer.Serialize(themeData);
             await JS.InvokeVoidAsync("localStorage.setItem", "theme", json);
             // Reload to apply theme
