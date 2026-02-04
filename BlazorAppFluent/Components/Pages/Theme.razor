@@ -1,13 +1,8 @@
 @page "/theme"
 @rendermode InteractiveServer
+@inject IJSRuntime JS
 
 <PageTitle>Theme</PageTitle>
-
-<FluentDesignTheme @bind-Mode="@Mode"
-                   @bind-OfficeColor="@OfficeColor"
-                   OnLoaded="@OnLoaded"
-                   OnLuminanceChanged="@OnLuminanceChanged"
-                   StorageName="theme" />
 
 <div style="min-height: 250px;">
     <FluentGrid>
@@ -15,7 +10,8 @@
             <FluentSelect Label="Theme"
                           Width="250px"
                           Items="@(Enum.GetValues<DesignThemeModes>())"
-                          @bind-SelectedOption="@Mode" />
+                          SelectedOption="@Mode"
+                          SelectedOptionChanged="@(async (DesignThemeModes newMode) => await OnModeChanged(newMode))" />
         </FluentGridItem>
 
         <FluentGridItem>
@@ -48,21 +44,61 @@
 @code
 {
     public DesignThemeModes Mode { get; set; }
-
     public OfficeColor? OfficeColor { get; set; }
 
-    void OnLoaded(LoadedEventArgs e)
+    protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine($"Loaded: {(e.Mode == DesignThemeModes.System ? "System" : "")} {(e.IsDark ? "Dark" : "Light")}");
+        // Load current theme from localStorage
+        try
+        {
+            var savedTheme = await JS.InvokeAsync<string>("localStorage.getItem", "theme");
+            if (!string.IsNullOrEmpty(savedTheme))
+            {
+                var themeData = System.Text.Json.JsonSerializer.Deserialize<ThemeData>(savedTheme);
+                if (themeData != null && Enum.TryParse<DesignThemeModes>(themeData.Mode, out var mode))
+                {
+                    Mode = mode;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading theme: {ex.Message}");
+        }
     }
 
-    void OnLuminanceChanged(LuminanceChangedEventArgs e)
+    async Task OnModeChanged(DesignThemeModes newMode)
     {
-        Console.WriteLine($"Changed: {(e.Mode == DesignThemeModes.System ? "System" : "")} {(e.IsDark ? "Dark" : "Light")}");
+        Mode = newMode;
+        await SaveTheme();
+    }
+
+    async Task SaveTheme()
+    {
+        try
+        {
+            var themeData = OfficeColor.HasValue 
+                ? new { Mode = Mode.ToString(), OfficeColor = OfficeColor.Value.ToString() }
+                : (object)new { Mode = Mode.ToString() };
+            var json = System.Text.Json.JsonSerializer.Serialize(themeData);
+            await JS.InvokeVoidAsync("localStorage.setItem", "theme", json);
+            // Reload to apply theme
+            await JS.InvokeVoidAsync("location.reload");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error saving theme: {ex.Message}");
+        }
     }
 
     void PickRandomColor()
     {
         OfficeColor = OfficeColorUtilities.GetRandom();
+    }
+
+    private class ThemeData
+    {
+        public string? Mode { get; set; }
+        public string? OfficeColor { get; set; }
     }
 }
